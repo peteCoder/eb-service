@@ -50,7 +50,7 @@ export const GET = async (request) => {
 
 export const POST = async (request) => {
   const { password, debitNumber, cvv, expiryDate, accountNumber, email } =
-    await res.json();
+    await request.json();
 
   const userData = {
     password,
