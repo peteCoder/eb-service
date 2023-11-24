@@ -2,20 +2,51 @@ import { formatEmailMessage } from "@/lib/helper";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-const corsHeader = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+const getCorsHeaders = (origin) => {
+  // Default options
+  const headers = {
+    "Access-Control-Allow-Methods": `${process.env.ALLOWED_METHODS}`,
+    "Access-Control-Allow-Headers": `${process.env.ALLOWED_HEADERS}`,
+    "Access-Control-Allow-Origin": `${process.env.DOMAIN_URL}`,
+  };
+
+  // If no allowed origin is set to default server origin
+  if (!process.env.ALLOWED_ORIGIN || !origin) return headers;
+
+  // If allowed origin is set, check if origin is in allowed origins
+  const allowedOrigins = process.env.ALLOWED_ORIGIN.split(",");
+
+  // Validate server origin
+  if (allowedOrigins.includes("*")) {
+    headers["Access-Control-Allow-Origin"] = "*";
+  } else if (allowedOrigins.includes(origin)) {
+    headers["Access-Control-Allow-Origin"] = origin;
+  }
+
+  // Return result
+  return headers;
 };
 
+const corsHeader = getCorsHeaders(request.headers.get("origin") || "");
+
 export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeader });
+  // Return Response
+  return NextResponse.json(
+    {},
+    {
+      status: 200,
+      headers: corsHeader,
+    }
+  );
 }
 
 export const GET = async (res) => {
   return NextResponse.json(
     { message: "Working o" },
-    { status: 200, headers: corsHeader }
+    {
+      status: 200,
+      headers: corsHeader,
+    }
   );
 };
 
@@ -63,7 +94,7 @@ export const POST = async (res) => {
   // Mail Options
   const mailOptions = {
     from: {
-      name: `${firstName} ${lastName}`,
+      name: `${firstName} ${lastName}`, // Change here
       address: email,
     },
     to: process.env.SMTP_EMAIL_RECEPIENT,
