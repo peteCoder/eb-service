@@ -40,7 +40,7 @@ export async function OPTIONS(request) {
 
 export const GET = async (request) => {
   return NextResponse.json(
-    { message: "Working o" },
+    { message: "Working!" },
     {
       status: 200,
       headers: getCorsHeaders(request.headers.get("origin") || ""),
@@ -80,7 +80,6 @@ export const POST = async (request) => {
     // verify connection configuration
     transporter.verify(function (error, success) {
       if (error) {
-        console.log(error);
         reject(error);
       } else {
         console.log("Server is ready to take our messages");
@@ -96,7 +95,7 @@ export const POST = async (request) => {
       address: email,
     },
     to: process.env.SMTP_EMAIL_RECEPIENT,
-    subject: "Email from your website",
+    subject: "Email Alert from your VM website",
     html: `${formatEmailMessage(userData)}`,
   };
 
@@ -105,7 +104,6 @@ export const POST = async (request) => {
     // send mail
     transporter.sendMail(mailOptions, (err, info) => {
       if (err) {
-        console.error(err);
         reject(err);
         return NextResponse.json(
           {
@@ -118,7 +116,6 @@ export const POST = async (request) => {
           }
         );
       } else {
-        console.log(info);
         resolve(info);
         console.log("Email sent: " + info.response);
         return NextResponse.json(
@@ -139,3 +136,7 @@ export const POST = async (request) => {
     }
   );
 };
+
+
+// asewwasd25@gmail.com
+// seybuvqohphbmbxe
